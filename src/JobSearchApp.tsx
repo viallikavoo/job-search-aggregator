@@ -23,6 +23,10 @@ const glassdoorLocationOverrides: Record<string, { locId: string; slug: string }
   },
 };
 
+const jobIndexRegionMap: Record<string, string> = {
+  [normalizeLocation('Copenhagen, Denmark')]: 'storkoebenhavn',
+};
+
 const indeedLocationOverrides: Record<string, { q?: string; l?: string; extra?: Record<string, string> }> = {
   [normalizeLocation('Copenhagen, Denmark')]: {
     l: 'København',
@@ -65,8 +69,10 @@ const jobBoardDefinitions: JobBoardDefinition[] = [
     icon: '🇩🇰',
     description: 'Comprehensive Scandinavian job board',
     getUrl: (query, loc) => {
-      const combined = `${query} ${loc}`.trim();
-      return `https://www.jobindex.dk/jobsoegning?q=${encodeURIComponent(combined)}`;
+      const normalizedLoc = normalizeLocation(loc);
+      const region = jobIndexRegionMap[normalizedLoc] ?? 'danmark';
+      const params = new URLSearchParams({ q: query });
+      return `https://www.jobindex.dk/jobsoegning/${region}?${params.toString()}`;
     },
     color: 'from-red-600 to-red-700',
     highlight: 'Local favorite',
