@@ -218,10 +218,6 @@ const JobSearchApp: React.FC = () => {
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Custom Tech Job Hub</h1>
               <p className="text-gray-600">Tailor your search to the roles, skills, and locations that matter to you.</p>
             </div>
-            <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2 text-center">
-              <div className="text-2xl font-bold text-green-700">2,000+</div>
-              <div className="text-xs text-green-600">Live jobs</div>
-            </div>
           </div>
 
           <div className="mb-6 grid gap-4 md:grid-cols-2">
