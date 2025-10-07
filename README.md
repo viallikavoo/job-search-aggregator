@@ -24,7 +24,17 @@ npm run preview
 
 ## Deploying
 
-The build is entirely static. After running `npm run build`, deploy the contents of the `dist/` folder to any static host (Vercel, Netlify, Cloudflare Pages, GitHub Pages, etc.).
+The build is entirely static. After running `npm run build`, deploy the contents of the `dist/` folder to any static host (Vercel, Netlify, Cloudflare Pages, etc.).
+
+### GitHub Pages
+
+This project is already configured for GitHub Pages. To publish:
+
+```bash
+npm run deploy
+```
+
+That command runs the production build and pushes `dist/` to the `gh-pages` branch via [`gh-pages`](https://github.com/tschaub/gh-pages). Make sure the repository’s Pages settings point at the `gh-pages` branch.
 
 ## Analytics (Optional)
 
