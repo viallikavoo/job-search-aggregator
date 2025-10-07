@@ -37,17 +37,25 @@ const indeedLocationOverrides: Record<string, { q?: string; l?: string; extra?: 
   },
 };
 
+const hashString = (value: string) =>
+  value.split('').reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) >>> 0, 0);
+
 const estimateJobs = (base: number, query: string, location: string, boardName: string): number => {
-  const keywords = query.split(/\s+/).filter(Boolean).length || 1;
-  const keywordFactor = Math.min(1.6, Math.max(0.7, 0.55 + keywords * 0.18));
-  const lengthFactor = Math.min(1.4, Math.max(0.85, query.length / 18));
+  const tokens = query
+    .toLowerCase()
+    .split(/\s+/)
+    .map((token) => token.replace(/[^a-z0-9]/g, ''))
+    .filter(Boolean);
+  const uniqueTokens = new Set(tokens);
+  const tokenFactor = 0.7 + uniqueTokens.size * 0.22; // more keywords -> broader search window
+  const lengthFactor = 0.85 + Math.min(1.4, query.length / 10 / Math.max(1, uniqueTokens.size)); // longer phrases -> more variance
+  const locationFactor =
+    location.toLowerCase().includes('remote') || location.toLowerCase().includes('hybrid') ? 1.15 : 1;
 
-  const seed = `${query}|${location}|${boardName}`
-    .split('')
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const variation = ((seed % 17) - 8) / 50; // ~ -0.16 .. +0.18
+  const seed = hashString(`${boardName}|${query}|${location}`);
+  const variation = ((seed % 21) - 10) / 20; // -0.5 .. +0.5
 
-  const result = Math.round(base * keywordFactor * lengthFactor * (1 + variation));
+  const result = Math.round(base * tokenFactor * lengthFactor * locationFactor * (1 + variation));
   return Math.max(5, result);
 };
 
